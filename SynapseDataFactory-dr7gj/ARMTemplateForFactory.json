@@ -31,7 +31,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy Data",
+						"name": "CopyMotorVehicleCollisions",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
