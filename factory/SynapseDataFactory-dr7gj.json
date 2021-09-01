@@ -1,0 +1,9 @@
+{
+	"name": "SynapseDataFactory-dr7gj",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "62a5300a-585e-4d65-a58d-464252855f4c",
+		"tenantId": "fb7200d5-cdec-4683-918c-2952099af137"
+	}
+}
