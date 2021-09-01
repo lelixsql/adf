@@ -1,15 +1,15 @@
 {
-	"name": "SynapseDW_MotorVehicleCollisions",
+	"name": "NYCDataSets_MotorVehicleCollisions",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureSynapseAnalytics1",
+			"referenceName": "OperationalSQL_NYCDataSets",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
 			"name": "Lab1"
 		},
 		"annotations": [],
-		"type": "AzureSqlDWTable",
+		"type": "AzureSqlTable",
 		"schema": [
 			{
 				"name": "UniqueKey",
