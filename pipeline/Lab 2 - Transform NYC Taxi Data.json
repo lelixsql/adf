@@ -97,6 +97,50 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Transform NYC Taxi Data",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Copy Taxi Data Files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Copy Taxi Location Lookup",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "TransformNYCTaxiData",
+						"type": "DataFlowReference"
+					},
+					"staging": {
+						"linkedService": {
+							"referenceName": "synapsedatalake",
+							"type": "LinkedServiceReference"
+						},
+						"folderPath": "polybase"
+					},
+					"integrationRuntime": {
+						"referenceName": "MappingDataFlowsIR",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
 			}
 		],
 		"annotations": []
