@@ -18,6 +18,10 @@
 		"synapsedatalake_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'synapsedatalake'"
+		},
+		"MDWResources_sasUri": {
+			"type": "secureString",
+			"metadata": "Secure string for 'sasUri' of 'MDWResources'"
 		}
 	},
 	"variables": {
@@ -469,6 +473,332 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MDWResources')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "MDWResources",
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"sasUri": "[parameters('MDWResources_sasUri')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MDWResources_NYCTaxiData_Binary')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MDWResources",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Lab2"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "nyctaxidata"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MDWResources')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NYCTaxiData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "synapsedatalake",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Lab2"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "nyctaxidata-raw"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/synapsedatalake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SynapseDataLake_NYCTaxiData_CSV')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "synapsedatalake",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Lab2"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "nyctaxidata-raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "VendorID",
+						"type": "String"
+					},
+					{
+						"name": "tpep_pickup_datetime",
+						"type": "String"
+					},
+					{
+						"name": "tpep_dropoff_datetime",
+						"type": "String"
+					},
+					{
+						"name": "passenger_count",
+						"type": "String"
+					},
+					{
+						"name": "trip_distance",
+						"type": "String"
+					},
+					{
+						"name": "RatecodeID",
+						"type": "String"
+					},
+					{
+						"name": "store_and_fwd_flag",
+						"type": "String"
+					},
+					{
+						"name": "PULocationID",
+						"type": "String"
+					},
+					{
+						"name": "DOLocationID",
+						"type": "String"
+					},
+					{
+						"name": "payment_type",
+						"type": "String"
+					},
+					{
+						"name": "fare_amount",
+						"type": "String"
+					},
+					{
+						"name": "extra",
+						"type": "String"
+					},
+					{
+						"name": "mta_tax",
+						"type": "String"
+					},
+					{
+						"name": "tip_amount",
+						"type": "String"
+					},
+					{
+						"name": "tolls_amount",
+						"type": "String"
+					},
+					{
+						"name": "improvement_surcharge",
+						"type": "String"
+					},
+					{
+						"name": "total_amount",
+						"type": "String"
+					},
+					{
+						"name": "congestion_surcharge",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/synapsedatalake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NYCDataSets_NYCTaxiLocationLookup')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OperationalSQL_NYCDataSets",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Lab2"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "LocationID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Borough",
+						"type": "varchar"
+					},
+					{
+						"name": "Zone",
+						"type": "varchar"
+					},
+					{
+						"name": "ServiceZone",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "NYC",
+					"table": "TaxiLocationLookup"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OperationalSQL_NYCDataSets')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SynapseDW_NYCTaxiDataSummary')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseAnalytics1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Lab2"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "PickUpDate",
+						"type": "date"
+					},
+					{
+						"name": "PickUpBorough",
+						"type": "varchar"
+					},
+					{
+						"name": "PickUpZone",
+						"type": "varchar"
+					},
+					{
+						"name": "PaymentType",
+						"type": "varchar"
+					},
+					{
+						"name": "TotalTripCount",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TotalPassengerCount",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TotalDistanceTravelled",
+						"type": "decimal",
+						"precision": 38,
+						"scale": 2
+					},
+					{
+						"name": "TotalTipAmount",
+						"type": "decimal",
+						"precision": 38,
+						"scale": 2
+					},
+					{
+						"name": "TotalFareAmount",
+						"type": "decimal",
+						"precision": 38,
+						"scale": 2
+					},
+					{
+						"name": "TotalTripAmount",
+						"type": "decimal",
+						"precision": 38,
+						"scale": 2
+					}
+				],
+				"typeProperties": {
+					"schema": "NYC",
+					"table": "TaxiDataSummary"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SynapseDW_NYCTaxiLocationLookup')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseAnalytics1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Lab2"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "LocationID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Borough",
+						"type": "varchar"
+					},
+					{
+						"name": "Zone",
+						"type": "varchar"
+					},
+					{
+						"name": "ServiceZone",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "NYC",
+					"table": "TaxiLocationLookup"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics1')]"
+			]
 		}
 	]
 }
