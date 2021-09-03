@@ -1,15 +1,15 @@
 {
-	"name": "NYCDataSets_NYCTaxiLocationLookup",
+	"name": "SynapseDW_NYCTaxiLocationLookup",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "OperationalSQL_NYCDataSets",
+			"referenceName": "AzureSynapseAnalytics1",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
 			"name": "Lab2"
 		},
 		"annotations": [],
-		"type": "AzureSqlTable",
+		"type": "AzureSqlDWTable",
 		"schema": [
 			{
 				"name": "LocationID",
