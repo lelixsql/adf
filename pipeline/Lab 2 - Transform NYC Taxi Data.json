@@ -26,7 +26,11 @@
 						}
 					},
 					"sink": {
-						"type": "AzureSqlSink"
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings",
+							"copyBehavior": "PreserveHierarchy"
+						}
 					},
 					"enableStaging": false
 				},
@@ -38,7 +42,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "NYCDataSets_MotorVehicleCollisions",
+						"referenceName": "SynapseDataLake_NYCTaxiData_Binary",
 						"type": "DatasetReference"
 					}
 				]
